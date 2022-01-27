@@ -3,10 +3,11 @@ import pandas as pd
 
 class validatedSNPlist:
     """
-    This class is purely for convenience of storing validated candidate variants. It is only a wrapper around
-    an actual list of pairLocus objects (which store the compared samples and the position), with a slightly
-    more robust __contains__ to avoid some funky behaviour.
+    This class is purely for convenience of storing validated candidate variants for a pair of germline and tumour.
+    It is only a wrapper around an actual list of pairLocus objects (which store the compared samples and the position),
+    with a slightly more robust __contains__ to avoid some funky behaviour.
     """
+
     def __init__(self, GL_ID: str, CL_ID: str, loci_list: list):
         self.GL_ID = GL_ID
         self.CL_ID = CL_ID
@@ -31,18 +32,28 @@ class validatedSNPlist:
         return self.is_present(item)
 
 
-def build_validatedSNPlist(GL_ID, CL_ID, snplist_xlsx_path):
+def build_validatedSNPlist(GL_ID: str, CL_ID: str, snplist_xlsx_path):
     """
+    This function constructs a validatedSNPlist from an Excel sheet of manually confirmed calls.
+    It should have columns named 'Ref', 'Alt', 'Chr', 'Start', 'End', 'Func.RefGene', as per the column names
+    of ANNOVAR output files.
+
+    It is possible for the sheet to have a 'comment' column to distinguish variants which were manually called,
+    and thus not present in the ANNOVAR output.
 
     :param GL_ID: ID of germline sample
     :param CL_ID: ID of tumour sample
     :param snplist_xlsx_path: Path (absolute or relative) to excel file containing
-    :return:
+    :return: An instance of validatedSNPlist
     """
 
     all_confirmed_calls_xlsx = pd.read_excel(snplist_xlsx_path)
-    computer_confirmed_xlsx_mask = all_confirmed_calls_xlsx["comment"].apply(lambda x: x != "manually called")
-    confirmed_calls_xlsx = all_confirmed_calls_xlsx[computer_confirmed_xlsx_mask]
+
+    if "comment" in all_confirmed_calls_xlsx.columns:
+        computer_confirmed_xlsx_mask = all_confirmed_calls_xlsx["comment"].apply(lambda x: x != "manually called")
+        confirmed_calls_xlsx = all_confirmed_calls_xlsx[computer_confirmed_xlsx_mask]
+    else:
+        confirmed_calls_xlsx = all_confirmed_calls_xlsx
 
     loci_list = []
     for k, row in confirmed_calls_xlsx.iterrows():
