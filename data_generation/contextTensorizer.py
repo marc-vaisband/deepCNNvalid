@@ -4,8 +4,9 @@ from pairLocus import pairLocus
 from singleTensorizer import singleTensorizer
 from bamPhonebook import bamPhonebook
 
+np.random.seed(42)
 
-def nocontext_tensorize_plocus(stensorizer: singleTensorizer, plocus: pairLocus, abam_dict: dict):
+def nocontext_depth_tensorize_plocus(stensorizer: singleTensorizer, plocus: pairLocus, abam_dict: dict):
     """
     Top-level function to obtain a no-context (i.e.: only germline and tumour are stacked) tensorisation of a candidate
     variant.
@@ -121,6 +122,9 @@ def random_context_tensorize_once(stensorizer: singleTensorizer, plocus: pairLoc
     except AssertionError:
         raise ValueError("Problem with parsing line/library information, they are not strings!")
 
+    # For each of the comparison blocks, we first obtain all admissible comparisons, then randomly choose the required
+    # number, then store the IDs for tensorisation.
+
     # Comparison bams from different line:
     if k_diffline_samelib > 0:
         diffline_comparison_mask = get_diffline_comparison_mask(metadf=bambook.bam_metadf, cl_line=cl_line,
@@ -129,8 +133,15 @@ def random_context_tensorize_once(stensorizer: singleTensorizer, plocus: pairLoc
         for ID in possible_diffline_comparison_df.index:
             if not abam_dict[ID].has_reads(plocus.position):
                 possible_diffline_comparison_df.drop(ID, axis=0, inplace=True)
+
+        if len(possible_diffline_comparison_df) >= k_diffline_samelib:
+            diffline_comp_IDs = list(
+                np.random.choice(possible_diffline_comparison_df.index, size=k_diffline_samelib, replace=False))
+        else:
+            n_missing_diffline = k_diffline_samelib - len(possible_diffline_comparison_df)
+            diffline_comp_IDs = list(possible_diffline_comparison_df.index) + [None] * n_missing_diffline
     else:
-        possible_diffline_comparison_df = pd.DataFrame()
+        diffline_comp_IDs = []
 
     # Comparison bams from same line:
     if k_sameline_samelib > 0:
@@ -140,23 +151,15 @@ def random_context_tensorize_once(stensorizer: singleTensorizer, plocus: pairLoc
         for ID in possible_sameline_comparison_df.index:
             if not abam_dict[ID].has_reads(plocus.position):
                 possible_sameline_comparison_df.drop(ID, axis=0, inplace=True)
-    else:
-        possible_sameline_comparison_df = pd.DataFrame()
 
-    # Now make random choice for tensor, padding with 0 if not enough
-    if len(possible_diffline_comparison_df) >= k_diffline_samelib:
-        diffline_comp_IDs = list(
-            np.random.choice(possible_diffline_comparison_df.index, size=k_diffline_samelib, replace=False))
+        if len(possible_sameline_comparison_df) >= k_sameline_samelib:
+            sameline_comp_IDs = list(
+                np.random.choice(possible_sameline_comparison_df.index, size=k_sameline_samelib, replace=False))
+        else:
+            n_missing_sameline = k_sameline_samelib - len(possible_sameline_comparison_df)
+            sameline_comp_IDs = list(possible_sameline_comparison_df.index) + [None] * n_missing_sameline
     else:
-        n_missing_diffline = k_diffline_samelib - len(possible_diffline_comparison_df)
-        diffline_comp_IDs = list(possible_diffline_comparison_df.index) + [None] * n_missing_diffline
-
-    if len(possible_sameline_comparison_df) >= k_sameline_samelib:
-        sameline_comp_IDs = list(
-            np.random.choice(possible_sameline_comparison_df.index, size=k_sameline_samelib, replace=False))
-    else:
-        n_missing_sameline = k_sameline_samelib - len(possible_sameline_comparison_df)
-        sameline_comp_IDs = list(possible_sameline_comparison_df.index) + [None] * n_missing_sameline
+        sameline_comp_IDs = []
 
 
     # Finally, tensorize and return
