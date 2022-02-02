@@ -19,8 +19,8 @@ with open(in_facility_labels_path, "rb") as f:
 train_labels = to_categorical(train_labels_num)
 
 
-validation_data_path = os.path.abspath("../stored_data/kotani/kotani_tensor.npy")
-validation_label_path = os.path.abspath("../stored_data/kotani/kotani_labels.npy")
+validation_data_path = os.path.abspath("../stored_data/kotani/kotani_x1k2_tensor.npy")
+validation_label_path = os.path.abspath("../stored_data/kotani/kotani_x1k2_labels.npy")
 with open(validation_data_path, "rb") as f:
     valid_data = np.load(f)
 with open(validation_label_path, "rb") as f:

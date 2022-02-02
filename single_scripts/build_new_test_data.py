@@ -18,7 +18,7 @@ import pickle
 Build bamlist
 """
 
-kotani_folder = os.path.abspath("./stored_data/kotani")
+kotani_folder = os.path.abspath("../stored_data/kotani")
 os.makedirs(kotani_folder, exist_ok=True)
 
 kotani_bamlist_path = os.path.join(kotani_folder, "bamlist.csv")
