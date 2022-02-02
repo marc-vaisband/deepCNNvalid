@@ -22,7 +22,20 @@ nocontext_labels_path = os.path.join(nocontext_data_folder, "x1k2_labels.npy")
 
 
 
-def run_longterm_cv(data_path, label_path, get_model_callable, model_name=""):
+def run_longterm_evaluation(data_path, label_path, get_model_callable, model_name="", n_splits=100):
+    """
+    Function that performs evaluation by averaging performance metrics from a large number of random
+    stratified train-test-splits.
+
+    :param data_path: Path to binary dump of numpy tensor
+    :param label_path: Path to binary dump of labels
+    :param get_model_callable: Callable that takes the arguments 'input_shape' and 'metrics' and returns a compiled
+    keras model ready for fitting.
+    :param model_name: Name of folder in which reports and models will be stored
+    :param n_splits: Number of random stratified train-test-splits to perform
+    :return:
+    """
+
     execution_datetime = datetime.datetime.fromtimestamp(time.time())
 
     concrete_out_folder = \
@@ -58,7 +71,7 @@ def run_longterm_cv(data_path, label_path, get_model_callable, model_name=""):
     np.random.seed(np_tf_seed)
     tensorflow.random.set_seed(np_tf_seed)
 
-    for i in range(100):
+    for i in range(n_splits):
         split_seed = i
         split_seeds.append(split_seed)
 
@@ -132,8 +145,8 @@ def run_longterm_cv(data_path, label_path, get_model_callable, model_name=""):
     print(f"Std of valaccs: {np.std(valaccs)}")
 
 
-run_longterm_cv(data_path=nocontext_tensor_path, label_path=nocontext_labels_path,
-                get_model_callable=make_batchnorm_model, model_name="nocontext")
-run_longterm_cv(data_path=contexted_tensor_path, label_path=contexted_labels_path,
-                get_model_callable=make_batchnorm_model, model_name="contexted")
+run_longterm_evaluation(data_path=nocontext_tensor_path, label_path=nocontext_labels_path,
+                        get_model_callable=make_batchnorm_model, model_name="nocontext")
+run_longterm_evaluation(data_path=contexted_tensor_path, label_path=contexted_labels_path,
+                        get_model_callable=make_batchnorm_model, model_name="contexted")
 
