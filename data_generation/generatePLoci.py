@@ -109,3 +109,40 @@ def get_ploci_from_annovarlist(annovarlist_path, pandas_csv_kwargs=None, **kwarg
 
     return ploci, data_labels
 
+
+def get_ploci_from_multianno(multianno_path, GL_ID: str, CL_ID: str, **kwargs):
+    """
+    Utility function to convert content of multianno file into variant calls represented by pairLocus instances.
+
+    :param multianno_path: Path to .multianno file
+    :param GL_ID: ID of germline sample
+    :param CL_ID: ID of tumour sample
+    :param kwargs: kwargs passed to constructor of pairLocus objects
+    :return: List of pairLocus objects representing variant calls
+    """
+
+
+    with open(multianno_path, "r") as f:
+        pathlines = f.read().splitlines()
+    data_dict = {"Chr": [], "Start": [], "End": [], "Ref": [], "Alt": [], "Func.refGene": [], "Gene.refGene": [],
+                 "GeneDetail.refGene": [], "ExonicFunc.refGene": []}
+
+    key_order = pathlines[0].split("\t")
+
+    for line in pathlines[1:]:
+        line_parts = line.split("\t")
+
+        for j, key in enumerate(key_order):
+            if key in data_dict.keys():
+                data_dict[key].append(line_parts[j])
+
+    data_df = pd.DataFrame(data_dict)
+
+
+    return [pairLocus(GL_ID=GL_ID, CL_ID=CL_ID,
+                      chromosome=row["Chr"], start=int(row["Start"]), stop=int(row["End"]) + 1,
+                      ref=row["Ref"], alt=row["Alt"], funcrefgene=row["Func.refGene"], gene=row["Gene.refGene"],
+                      gene_detail=row["GeneDetail.refGene"], exonic_func=row["ExonicFunc.refGene"], **kwargs)
+            for k, row in data_df.iterrows()]
+
+

@@ -3,35 +3,37 @@ This script uses provided paths to csv files tracking the available BAM files, a
 the corresponding ANNOVAR output and lists of validated mutations. It tensorizes the
 sequencing data into numpy.ndarrays and saves them as binary dumps to the stored_data folder.
 """
+
 import numpy as np
-import bamPhonebook
-import alignedBAM
-from bamStruct import bamStruct
-from singleTensorizer import singleTensorizer
-from contextTensorizer import random_context_tensorize_once, nocontext_depth_tensorize_plocus
-from generatePLoci import get_ploci_from_annovarlist
+from data_generation.bamPhonebook import build_bambook_from_csv
+from data_generation.alignedBAM import alignedBAM
+from data_generation.bamStruct import bamStruct
+from data_generation.singleTensorizer import singleTensorizer
+from data_generation.contextTensorizer import random_context_tensorize_once, nocontext_depth_tensorize_plocus
+from data_generation.generatePLoci import get_ploci_from_annovarlist
 import pickle
 import os
 import random
 
 
-bambook_path = "path_here"
-annovarlist_path = "path_here"
+bambook_path = "./input_data/in_facility/dummy_bamlist.csv"
+annovarlist_path = "./input_data/in_facility/dummy_annovarlist.csv"
 
 # Import the list of available bams, build alignedBAM objects for them all for later use
 print("Importing list of bam files.")
 
-bambook = bamPhonebook.build_bambook_from_csv(bambook_path)
+bambook = build_bambook_from_csv(bambook_path)
 
 # Now, create a dictionary for them to be accessed by ID
 print("Building dict of bams.")
 all_abams = {}
 for bam_ID, row in bambook.bam_metadf.iterrows():
-    all_abams[bam_ID] = alignedBAM.alignedBAM(ID=bam_ID, bam_path=row["bam_path"], bai_path=row["bai_path"],
+    all_abams[bam_ID] = alignedBAM(ID=bam_ID, bam_path=row["bam_path"], bai_path=row["bai_path"],
                                               line_ID=row["line_ID"], library_ID=row["library_ID"])
 
 all_abams[None] = None
 
+# Now that we have all bams ready, we can construct the candidate variants.
 print("Building ploci for SNPs...")
 
 ploci, labels = get_ploci_from_annovarlist(annovarlist_path, kick_indels=True)
@@ -44,8 +46,6 @@ with open("./data/ploci.pkl", "wb") as f:
 random.seed(42)
 np.random.seed(42)
 
-def tensorize_ploci(ploci_list, label_list, bamstruct, stensorizer, data_out_path, label_out_path, pl_out_path):
-    pass
 
 """
 Next, we want to build the input data. We build one dataset of only GL and CL, and
