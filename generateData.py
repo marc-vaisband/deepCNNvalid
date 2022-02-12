@@ -106,10 +106,13 @@ with open(os.path.join(contexted_folder, "x1k2_labels.npy"), "wb") as f:
 Lastly, we also tensorise the external dataset. Due to differences in formatting, this is slightly more involved.
 """
 
-kotani_folder = os.path.abspath("../stored_data/kotani")
-os.makedirs(kotani_folder, exist_ok=True)
+kotani_input_folder = os.path.abspath("../input_data/kotani")
+os.makedirs(kotani_input_folder, exist_ok=True)
 
-kotani_bamlist_path = os.path.join(kotani_folder, "bamlist.csv")
+kotani_storage_folder = os.path.abspath("../stored_data/kotani")
+os.makedirs(kotani_storage_folder, exist_ok=True)
+
+kotani_bamlist_path = os.path.join(kotani_input_folder, "relative_bamlist_kotani.csv")
 kotani_bambook = build_bambook_from_csv(kotani_bamlist_path)
 
 kotani_abams = {}
@@ -120,7 +123,7 @@ for bam_ID, row in kotani_bambook.bam_metadf.iterrows():
 kotani_abams[None] = None
 
 kotani_ploci = []
-for filepath in glob.glob("/limcr-ngs/Franz/2021-07-29_ENA_mouse_mutations_analysis/14_hc.filtered.annovar/"
+for filepath in glob.glob("TODO"
                           "*.VarScan2.4.4.snp.Somatic.hc.filter.vcf.annovar.out.mm10_multianno.txt"):
 
     mouse_ID = filepath.split("/")[-1].split(".")[0]
@@ -132,16 +135,27 @@ for filepath in glob.glob("/limcr-ngs/Franz/2021-07-29_ENA_mouse_mutations_analy
                                             GL_ID=current_GL_ID, CL_ID=current_CL_ID, mouse_ID=mouse_ID)
     kotani_ploci += called_ploci
 
+# We filter out synonymous, non-exonic, and transduced loci
+filtered_kotani_ploci = [pl for pl in kotani_ploci if pl.funcrefgene == "exonic"]
+
+transduced_regions = [("chr9", 44803354, 44881274),  # Removed for biological reasons,
+                      ("chr4", 87769924, 87791965)]  # because this is transduced DNA for the MLL model
+
+filtered_kotani_ploci = [pl for pl in filtered_kotani_ploci if
+                         not any([pl.chromosome == chrom
+                                  and pl.start >= start
+                                  and pl.stop <= stop for chrom, start, stop in transduced_regions])]
+
 validated_loci_df = pd.read_csv(os.path.abspath("../input_data/kotani/kotani_snplist.csv"), sep=";")
 validated_ploci_list = [pairLocus(GL_ID=row["GL_ID"], CL_ID=row["CL_ID"], ref=row["ref"], alt=row["alt"],
                                   chromosome=row["chr"], start=row["start"], stop=row["end"], funcrefgene="",
                                   gene=row["gene"]) for k, row in validated_loci_df.iterrows()]
 kotani_labels = [any([vpl.isSamePosition(pl) and vpl.CL_ID == pl.CL_ID for vpl in validated_ploci_list])
-                 for pl in kotani_ploci]
+                 for pl in filtered_kotani_ploci]
 
 kotani_x1k2_tensors = []
 kotani_x1k2_compIDs = []
-for pl, label in zip(kotani_ploci, kotani_labels):
+for pl, label in zip(filtered_kotani_ploci, kotani_labels):
     try:
         new_tensor, new_comps = random_context_tensorize_once(
             stensorizer=k2_stensorizer, stack_axis=2, plocus=pl, bambook=kotani_bambook,
@@ -154,10 +168,10 @@ for pl, label in zip(kotani_ploci, kotani_labels):
 
 big_kotani_x1k2_tensor = np.stack(x1k2_tensors, axis=0)
 
-with open(os.path.join(kotani_folder, "kotani_x1k2_tensor.npy"), "wb") as f:
+with open(os.path.join(kotani_storage_folder, "kotani_x1k2_tensor.npy"), "wb") as f:
     np.save(f, big_kotani_x1k2_tensor)
 print(f"Shape of big contexted tensor is: {big_kotani_x1k2_tensor.shape}")
-with open(os.path.join(kotani_folder, "kotani_x1k2_labels.npy"), "wb") as f:
+with open(os.path.join(kotani_storage_folder, "kotani_x1k2_labels.npy"), "wb") as f:
     np.save(f, np.array(kotani_labels).astype(int))
 
 print("Data building done. See \"stored_data\" folder for saved files in binary format.")
