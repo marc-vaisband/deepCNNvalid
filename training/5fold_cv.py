@@ -89,7 +89,7 @@ def run_5fold_cv(data_path, label_path, get_model_callable, model_name=""):
                     "y": train_labels,
                     "batch_size": 256,
                     "epochs": 50,
-                    "verbose": 1,
+                    "verbose": 0,
                     }
         history = model.fit(**fit_args)
 
