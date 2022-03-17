@@ -91,6 +91,9 @@ def run_5fold_cv(data_path, label_path, get_model_callable, model_name=""):
                     "epochs": 50,
                     "verbose": 0,
                     }
+
+        # Please commit this
+
         history = model.fit(**fit_args)
 
         model.save(os.path.join(model_save_folder, str(i)))
