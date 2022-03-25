@@ -10,17 +10,19 @@ from training.make_keras_model import make_batchnorm_model
 """
 I/O
 """
-in_facility_data_path = os.path.abspath("../stored_data/contexted/x1k2_tensor.npy")
-in_facility_labels_path = os.path.abspath("../stored_data/contexted/x1k2_labels.npy")
-with open(in_facility_data_path, "rb") as f:
+contexted_data_folder = os.path.abspath("../data/in_facility/contexted")
+contexted_tensor_path = os.path.join(contexted_data_folder, "scrambled_x1k2_tensor.npy")
+contexted_labels_path = os.path.join(contexted_data_folder, "x1k2_labels.npy")
+with open(contexted_tensor_path, "rb") as f:
     train_data = np.load(f)
-with open(in_facility_labels_path, "rb") as f:
+with open(contexted_labels_path, "rb") as f:
     train_labels_num = np.load(f)
+
+train_data = keras.utils.normalize(train_data)
 train_labels = to_categorical(train_labels_num)
 
-
-validation_data_path = os.path.abspath("../stored_data/kotani/kotani_x1k2_tensor.npy")
-validation_label_path = os.path.abspath("../stored_data/kotani/kotani_x1k2_labels.npy")
+validation_data_path = os.path.abspath("../data/kotani/scrambled_kotani_x1k2_tensor.npy")
+validation_label_path = os.path.abspath("../data/kotani/kotani_x1k2_labels.npy")
 with open(validation_data_path, "rb") as f:
     valid_data = np.load(f)
 with open(validation_label_path, "rb") as f:
@@ -37,7 +39,7 @@ fit_args = {"x": train_data,
             "y": train_labels,
             "batch_size": 256,
             "epochs": 50,
-            "verbose": 1,
+            "verbose": 0,
             }
 
 model = make_batchnorm_model(input_shape=train_data.shape[1:], metrics=["accuracy"])

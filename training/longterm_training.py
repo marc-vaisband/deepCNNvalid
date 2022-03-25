@@ -12,13 +12,13 @@ sys.path.append(os.path.abspath(".."))
 from utils.scoring_utils import score_from_cat
 
 
-contexted_data_folder = os.path.abspath("../stored_data/contexted")
-contexted_tensor_path = os.path.join(contexted_data_folder, "x1k2_tensor.npy")
+contexted_data_folder = os.path.abspath("../data/in_facility/contexted")
+contexted_tensor_path = os.path.join(contexted_data_folder, "scrambled_x1k2_tensor.npy")
 contexted_labels_path = os.path.join(contexted_data_folder, "x1k2_labels.npy")
 
-nocontext_data_folder = os.path.abspath("../stored_data/nocontext")
-nocontext_tensor_path = os.path.join(nocontext_data_folder, "x1k2_tensor.npy")
-nocontext_labels_path = os.path.join(nocontext_data_folder, "x1k2_labels.npy")
+nocontext_data_folder = os.path.abspath("../data/in_facility/nocontext")
+nocontext_tensor_path = os.path.join(nocontext_data_folder, "scrambled_nocontext_tensor.npy")
+nocontext_labels_path = os.path.join(nocontext_data_folder, "nocontext_labels.npy")
 
 
 
@@ -43,10 +43,9 @@ def run_longterm_evaluation(data_path, label_path, get_model_callable, model_nam
                      f"{model_name}_"
                      f"{execution_datetime.year}_{execution_datetime.month}_{execution_datetime.day}_"
                      f"{execution_datetime.hour}_{execution_datetime.minute}_{execution_datetime.second}/")
-    model_save_folder = os.path.join(concrete_out_folder, "models")
+
     info_save_folder = os.path.join(concrete_out_folder, "info")
     os.makedirs(concrete_out_folder, exist_ok=True)
-    os.makedirs(model_save_folder, exist_ok=True)
     os.makedirs(info_save_folder, exist_ok=True)
 
     print("Loading data.")
@@ -94,7 +93,7 @@ def run_longterm_evaluation(data_path, label_path, get_model_callable, model_nam
                     "y": train_labels,
                     "batch_size": 256,
                     "epochs": 50,
-                    "verbose": 1,
+                    "verbose": 0,
                     }
         history = model.fit(**fit_args)
 

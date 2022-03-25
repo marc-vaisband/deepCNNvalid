@@ -143,13 +143,6 @@ subset_valid_labels = valid_labels[keep]
 
 assert len(subset_valid_data) == len(subset_ploci)
 
-subset_comparison_data_path = "/limcr-ngs/Marc/git/PhD/limcr_mutcall/mutcallClean/data_generation/data/testset1/subset_depth_tensor.npy"
-subset_comparison_label_path = "/limcr-ngs/Marc/git/PhD/limcr_mutcall/mutcallClean/data_generation/data/testset1/subset_labels.npy"
-with open(subset_comparison_data_path, "wb") as f:
-    np.save(f, subset_valid_data)
-with open(subset_comparison_label_path, "wb") as f:
-    np.save(f, subset_valid_labels)
-
 
 nonsyn_data = subset_valid_data[keep_nonsyn]
 nonsyn_labels = subset_valid_labels[keep_nonsyn]
