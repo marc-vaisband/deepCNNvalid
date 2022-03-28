@@ -97,6 +97,8 @@ def run_longterm_evaluation(data_path, label_path, get_model_callable, model_nam
                     "epochs": 50,
                     "verbose": 0,
                     }
+        np.random.seed(split_seed)
+        tensorflow.random.set_seed(split_seed)
         history = model.fit(**fit_args)
 
         model_prediction_test = model.predict(test_data)

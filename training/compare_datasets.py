@@ -22,7 +22,7 @@ train_data = keras.utils.normalize(train_data)
 train_labels = to_categorical(train_labels_num)
 
 validation_data_path = os.path.abspath("../data/kotani/scrambled_kotani_x1k2_tensor.npy")
-validation_label_path = os.path.abspath("../data/kotani/kotani_x1k2_labels.npy")
+validation_label_path = os.path.abspath("../data/kotani/kotani_labels.npy")
 with open(validation_data_path, "rb") as f:
     valid_data = np.load(f)
 with open(validation_label_path, "rb") as f:
