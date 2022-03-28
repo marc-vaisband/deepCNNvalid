@@ -22,7 +22,7 @@ nocontext_tensor_path = os.path.join(nocontext_data_folder, "scrambled_nocontext
 nocontext_labels_path = os.path.join(nocontext_data_folder, "nocontext_labels.npy")
 
 
-def run_5fold_cv(data_path, label_path, get_model_callable, model_name=""):
+def run_5fold_cv(data_path, label_path, get_model_callable, model_name="", tf_seed=0, skf_seed=0):
     """
     Function that performs stratified k-fold crossvalidation
 
@@ -42,10 +42,9 @@ def run_5fold_cv(data_path, label_path, get_model_callable, model_name=""):
                      f"{model_name}_"
                      f"{execution_datetime.year}_{execution_datetime.month}_{execution_datetime.day}_"
                      f"{execution_datetime.hour}_{execution_datetime.minute}_{execution_datetime.second}/")
-    model_save_folder = os.path.join(concrete_out_folder, "models")
+
     info_save_folder = os.path.join(concrete_out_folder, "info")
     os.makedirs(concrete_out_folder, exist_ok=True)
-    os.makedirs(model_save_folder, exist_ok=True)
     os.makedirs(info_save_folder, exist_ok=True)
 
     print("Loading data.")
@@ -59,7 +58,6 @@ def run_5fold_cv(data_path, label_path, get_model_callable, model_name=""):
 
 
 
-    skf_seed = 42
     np.random.seed(skf_seed)
     skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=skf_seed)
 
@@ -71,7 +69,7 @@ def run_5fold_cv(data_path, label_path, get_model_callable, model_name=""):
 
     i = 0
     for train_idc, test_idc in skf.split(in_data, labels):
-        train_seed = i + 42
+        train_seed = i + tf_seed
         np.random.seed(train_seed)
         tensorflow.random.set_seed(train_seed)
         train_seeds.append(train_seed)
@@ -94,8 +92,6 @@ def run_5fold_cv(data_path, label_path, get_model_callable, model_name=""):
                     }
 
         history = model.fit(**fit_args)
-
-        model.save(os.path.join(model_save_folder, str(i)))
 
         model_prediction_test = model.predict(test_data)
 
