@@ -22,7 +22,7 @@ nocontext_labels_path = os.path.join(nocontext_data_folder, "nocontext_labels.np
 
 
 
-def run_longterm_evaluation(data_path, label_path, get_model_callable, model_name="", n_splits=100):
+def run_longterm_evaluation(data_path, label_path, get_model_callable, model_name="", n_splits=100, tf_seed=0, skf_seed=0):
     """
     Function that performs evaluation by averaging performance metrics from a large number of random
     stratified train-test-splits.
@@ -66,7 +66,7 @@ def run_longterm_evaluation(data_path, label_path, get_model_callable, model_nam
 
     split_seeds = []
 
-    np_tf_seed = 42
+    np_tf_seed = 0
     np.random.seed(np_tf_seed)
     tensorflow.random.set_seed(np_tf_seed)
 
