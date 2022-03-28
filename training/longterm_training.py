@@ -46,7 +46,7 @@ def run_longterm_evaluation(data_path, label_path, get_model_callable, model_nam
                      f"{execution_datetime.year}_{execution_datetime.month}_{execution_datetime.day}_"
                      f"{execution_datetime.hour}_{execution_datetime.minute}_{execution_datetime.second}/")
 
-    info_save_folder = os.path.join(concrete_out_folder, "info")
+    info_save_folder = concrete_out_folder
     os.makedirs(concrete_out_folder, exist_ok=True)
     os.makedirs(info_save_folder, exist_ok=True)
 
@@ -117,12 +117,6 @@ def run_longterm_evaluation(data_path, label_path, get_model_callable, model_nam
     print(f"Average validation accuracy: {np.average(valaccs)}")
     print(f"Std of valaccs: {np.std(valaccs)}")
     print("Saving settings and results")
-
-
-
-    with open(os.path.join(info_save_folder,  "paths.txt"), "w") as f:
-        f.write(f"Data path: {data_path}\n")
-        f.write(f"Labels path: {label_path}\n")
 
     with open(os.path.join(info_save_folder,  "code.txt"), "w") as f:
         f.write(inspect.getsource(get_model_callable))

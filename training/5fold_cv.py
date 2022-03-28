@@ -45,9 +45,9 @@ def run_5fold_cv(data_path, label_path, get_model_callable, model_name="", tf_se
                      f"{execution_datetime.year}_{execution_datetime.month}_{execution_datetime.day}_"
                      f"{execution_datetime.hour}_{execution_datetime.minute}_{execution_datetime.second}/")
 
-    info_save_folder = os.path.join(concrete_out_folder, "info")
+    info_save_folder = concrete_out_folder
     os.makedirs(concrete_out_folder, exist_ok=True)
-    os.makedirs(info_save_folder, exist_ok=True)
+
 
     print("Loading data.")
     with open(data_path, "rb") as f:
@@ -112,23 +112,19 @@ def run_5fold_cv(data_path, label_path, get_model_callable, model_name="", tf_se
     print(f"Std of valaccs: {np.std(valaccs)}")
     print("Saving settings and results")
 
-    with open(info_save_folder + "paths.txt", "w") as f:
-        f.write(f"Data path: {data_path}\n")
-        f.write(f"Labels path: {label_path}\n")
-
-    with open(info_save_folder + "code.txt", "w") as f:
+    with open(os.path.join(info_save_folder, "code.txt"), "w") as f:
         f.write(inspect.getsource(get_model_callable))
 
-    with open(info_save_folder + "seeds.txt", "w") as f:
+    with open(os.path.join(info_save_folder, "seeds.txt"), "w") as f:
         f.write(f"Skf seed: {skf_seed}\n")
         train_seed_string = ";".join(list(map(str, train_seeds)))
         f.write(f"Train seeds: {train_seed_string}")
 
-    with open(info_save_folder + "args.txt", "w") as f:
+    with open(os.path.join(info_save_folder, "args.txt"), "w") as f:
         for key in ["batch_size", "epochs"]:
             f.write(f"{key}: {fit_args[key]}\n")
 
-    with open(info_save_folder + "metrics.txt", "w") as f:
+    with open(os.path.join(info_save_folder, "metrics.txt"), "w") as f:
         f.write("metric;scores;avg\n")
         f.write("accuracy;" + ",".join([str(val) for val in valaccs]) + f";{np.mean(valaccs)}\n")
         f.write("precision;" + ",".join([str(val) for val in precisions]) + f";{np.mean(precisions)}\n")
