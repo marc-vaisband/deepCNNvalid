@@ -33,6 +33,8 @@ def run_longterm_evaluation(data_path, label_path, get_model_callable, model_nam
     keras model ready for fitting.
     :param model_name: Name of folder in which reports and models will be stored
     :param n_splits: Number of random stratified train-test-splits to perform
+    :param tf_seed: Seed for tensorflow
+    :param skf_seed: Seed for K-fold
     :return:
     """
 
@@ -144,8 +146,9 @@ def run_longterm_evaluation(data_path, label_path, get_model_callable, model_nam
     print(f"Std of valaccs: {np.std(valaccs)}")
 
 
-run_longterm_evaluation(data_path=nocontext_tensor_path, label_path=nocontext_labels_path,
-                        get_model_callable=make_batchnorm_model, model_name="nocontext")
 run_longterm_evaluation(data_path=contexted_tensor_path, label_path=contexted_labels_path,
                         get_model_callable=make_batchnorm_model, model_name="contexted")
+run_longterm_evaluation(data_path=nocontext_tensor_path, label_path=nocontext_labels_path,
+                        get_model_callable=make_batchnorm_model, model_name="nocontext")
+
 

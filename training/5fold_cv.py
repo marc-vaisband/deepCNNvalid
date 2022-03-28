@@ -31,6 +31,8 @@ def run_5fold_cv(data_path, label_path, get_model_callable, model_name="", tf_se
     :param get_model_callable: Callable that takes the arguments 'input_shape' and 'metrics' and returns a compiled
     keras model ready for fitting.
     :param model_name: Name of folder in which reports and models will be stored
+    :param tf_seed: Seed for tensorflow
+    :param skf_seed: Seed for K-fold
     :return:
     """
 
