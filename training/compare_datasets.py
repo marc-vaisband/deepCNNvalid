@@ -10,6 +10,7 @@ from training.make_keras_model import make_batchnorm_model
 """
 I/O
 """
+print("Loading data.")
 contexted_data_folder = os.path.abspath("../data/in_facility/contexted")
 contexted_tensor_path = os.path.join(contexted_data_folder, "scrambled_x1k2_tensor.npy")
 contexted_labels_path = os.path.join(contexted_data_folder, "x1k2_labels.npy")
@@ -35,11 +36,12 @@ valid_data = keras.utils.normalize(valid_data)
 """
 First: Train model on all in-facility data. 
 """
+print("Training model:")
 fit_args = {"x": train_data,
             "y": train_labels,
             "batch_size": 256,
             "epochs": 50,
-            "verbose": 0,
+            "verbose": 1,
             }
 
 model = make_batchnorm_model(input_shape=train_data.shape[1:], metrics=["accuracy"])
