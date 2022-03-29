@@ -15,7 +15,7 @@
 mkdir -p \
   data/in_facility/{00_metrics,01_raw_reads,02_aligned_bam,03_inter_bam,04_processed_bam,05_mpileup,06_varscan,07_annovar,databases}
 
-project_folder="2022_mouse_mutation_calling"
+project_folder="data/in_facility"
 
 ## databases used in this pipeline:
 
@@ -52,11 +52,11 @@ annovar_db=${project_folder}"/databases/mm10/annovar/mousedb/"
 
 cd ${project_folder}
 
-SRA_run=( $( cut -f 6 SRA_mouse_data.txt ) )
-bam_ID=( $( cut -f 5 SRA_mouse_data.txt ) )
+SRA_run=( $( cut -d ";" -f 2 SRA_infos.csv ) )
+bam_ID=( $( cut -d ";" -f 1 SRA_infos.csv ) )
 
-germ=( $( cut -f 1 matched_samples.txt ) )
-tumor=( $( cut -f 2 matched_samples.txt ) )
+germ=( $( cut -f 2 relative_annovarlist.csv ) )
+tumor=( $( cut -f 3 relative_annovarlist.csv ) )
 
 ## analysis pipeline:
 
@@ -125,7 +125,7 @@ for i in {1..51}; do
 
 done
 
-for i in {0 .. 41}; do
+for i in {1 .. 42}; do
 
   samtools mpileup \
     -B -q 1 \
