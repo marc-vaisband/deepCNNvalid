@@ -45,7 +45,7 @@ fit_args = {"x": train_data,
 model = make_batchnorm_model(input_shape=train_data.shape[1:], metrics=["accuracy"])
 history = model.fit(**fit_args)
 
-model_out_folder = os.path.abspath("../stored_models/for_kotani_validation")
+model_out_folder = os.path.abspath("../misc/keras_model_for_kotani")
 os.makedirs(model_out_folder, exist_ok=True)
 model.save(model_out_folder)
 
@@ -55,3 +55,8 @@ Next: Evaluate predictions on external data.
 y_pred_cat = model.predict(valid_data)
 print("Final validation metrics:")
 acc, precision, recall, f1 = score_from_cat(y_true_cat=valid_labels, y_pred_cat=y_pred_cat, verbose=True)
+
+report_folder = os.path.abspath("../reports/kotani_validation")
+with open(os.path.join(report_folder, "validation_metrics.csv"), "w") as f:
+    f.write(";".join(["accuracy", "precision", "recall", "f1"]) + "\n")
+    f.write(";".join([acc, precision, recall, f1]) + "\n")

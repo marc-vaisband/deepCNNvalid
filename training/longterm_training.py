@@ -41,7 +41,7 @@ def run_longterm_evaluation(data_path, label_path, get_model_callable, model_nam
     execution_datetime = datetime.datetime.fromtimestamp(time.time())
 
     concrete_out_folder = \
-        os.path.join(os.path.abspath("../stored_models/100splits/"),
+        os.path.join(os.path.abspath("../reports/100splits/"),
                      f"{model_name}_"
                      f"{execution_datetime.year}_{execution_datetime.month}_{execution_datetime.day}_"
                      f"{execution_datetime.hour}_{execution_datetime.minute}_{execution_datetime.second}/")
