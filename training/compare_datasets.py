@@ -59,6 +59,7 @@ print("Final validation metrics:")
 acc, precision, recall, f1 = score_from_cat(y_true_cat=valid_labels, y_pred_cat=y_pred_cat, verbose=True)
 
 report_folder = os.path.abspath("../reports/kotani_validation")
+os.makedirs(report_folder, exist_ok=True)
 with open(os.path.join(report_folder, "validation_metrics.csv"), "w") as f:
     f.write(";".join(["accuracy", "precision", "recall", "f1"]) + "\n")
     f.write(";".join([acc, precision, recall, f1]) + "\n")
