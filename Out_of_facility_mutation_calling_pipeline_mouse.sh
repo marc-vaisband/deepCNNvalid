@@ -15,7 +15,7 @@
 ## create a project folder structure similar to this:
 
 mkdir -p \
-  2022_mouse_mutation_calling_ENA/{00_metrics,01_downloaded_bam,02_inter_bam,03_processed_bam,04_mpileup,05_varscan,06_annovar,databases}
+  data/kotani/{00_metrics,01_downloaded_bam,02_inter_bam,03_processed_bam,04_mpileup,05_varscan,06_annovar,databases}
 
 project_folder="2022_mouse_mutation_calling_ENA"
 

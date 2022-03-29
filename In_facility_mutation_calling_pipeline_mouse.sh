@@ -13,7 +13,7 @@
 ## create a project folder structure similar to this:
 
 mkdir -p \
-  2022_mouse_mutation_calling/{00_metrics,01_raw_reads,02_aligned_bam,03_inter_bam,04_processed_bam,05_mpileup,06_varscan,07_annovar,databases}
+  data/in_facility/{00_metrics,01_raw_reads,02_aligned_bam,03_inter_bam,04_processed_bam,05_mpileup,06_varscan,07_annovar,databases}
 
 project_folder="2022_mouse_mutation_calling"
 
