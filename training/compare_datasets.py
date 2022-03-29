@@ -2,6 +2,8 @@ import numpy as np
 import sys
 import os
 import keras
+import tensorflow
+import random
 from keras.utils import to_categorical
 sys.path.append(os.path.abspath(".."))
 from utils.scoring_utils import score_from_cat
@@ -43,6 +45,11 @@ fit_args = {"x": train_data,
             "epochs": 50,
             "verbose": 1,
             }
+
+np.random.seed(0)
+tensorflow.random.set_seed(0)
+random.seed(0)
+
 
 model = make_batchnorm_model(input_shape=train_data.shape[1:], metrics=["accuracy"])
 history = model.fit(**fit_args)
