@@ -62,5 +62,5 @@ report_folder = os.path.abspath("../reports/kotani_validation")
 os.makedirs(report_folder, exist_ok=True)
 with open(os.path.join(report_folder, "validation_metrics.csv"), "w") as f:
     f.write(";".join(["accuracy", "precision", "recall", "f1"]) + "\n")
-    f.write(";".join([acc, precision, recall, f1]) + "\n")
+    f.write(f"{acc};{precision};{recall};{f1}\n")
 
