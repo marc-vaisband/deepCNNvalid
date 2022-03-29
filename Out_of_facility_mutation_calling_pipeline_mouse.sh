@@ -15,9 +15,9 @@
 ## create a project folder structure similar to this:
 
 mkdir -p \
-  data/kotani/{00_metrics,01_downloaded_bam,02_inter_bam,03_processed_bam,04_mpileup,05_varscan,06_annovar,databases}
+  2022_mouse_mutation_calling_ENA/{00_metrics,01_downloaded_bam,02_inter_bam,03_processed_bam,04_mpileup,05_varscan,06_annovar,databases}
 
-project_folder="data/kotani"
+project_folder="2022_mouse_mutation_calling_ENA"
 
 ## databases used in this pipeline:
 
@@ -58,7 +58,7 @@ annovar_db=${project_folder}"/databases/mm10/annovar/mousedb/"
 ## download sequence data from ENA
 
 cd ${project_folder}/01_downloaded_bam
-bash ENA_download_list.sh
+bash Out_of_facility_download_list.sh
 
 mouse_id=( $( cut -f 1 ENA_mouse_list.txt ) )
 sample_id=( $( cut -f 1 ENA_sample_list.txt ) )
