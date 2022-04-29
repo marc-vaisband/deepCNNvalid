@@ -1,5 +1,5 @@
 # deepCNNvalid
-Code accompanying the publication "Validation of genetic variants from NGS data using Deep Convolutional Neural Networks"
+Code accompanying the publication "Validation of genetic variants from NGS data using Deep Convolutional Neural Networks" (https://www.biorxiv.org/content/10.1101/2022.04.12.488021v1).
 
 The recommended way to run it is to download and decompress the version archived
 at Zenodo (https://zenodo.org/record/6409366), as it already includes binary dumps in NumPy format of all processed datasets. In this case, run
