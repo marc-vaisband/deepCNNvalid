@@ -8,8 +8,7 @@ import datetime
 import inspect
 from sklearn.model_selection import train_test_split
 from make_keras_model import make_batchnorm_model
-sys.path.append(os.path.abspath(".."))
-from utils.scoring_utils import score_from_cat
+
 
 
 contexted_data_folder = os.path.abspath("../data/in_facility/contexted")

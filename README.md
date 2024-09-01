@@ -1,7 +1,10 @@
 # deepCNNvalid
-Code accompanying the publication "Validation of genetic variants from NGS data using Deep Convolutional Neural Networks"
+Code accompanying the publication "Validation of genetic variants from NGS data using Deep Convolutional Neural Networks".
 
-The recommended way to run it is to download and decompress the version archived
+To find out about the utilisied architecture and training hyperparameters, you will be mainly interested in the Python scripts 
+contained in the "training" subdirectory, which contains the actual neural network learning.
+
+If you want to reproduce the results from the publication, the recommended way is to download and decompress the version archived
 at (TODO: Zenodo), as it already includes binary dumps in NumPy format of all processed datasets. In this case, run
 ```
 python ./training/5fold_cv.py
@@ -32,7 +35,7 @@ The code in this work was executed using Python 3.8.8 and relies on the followin
 If, on the other hand, you wish to rebuild the data from scratch, run 
 
 ```
-sh download_and_precess_data.sh
+sh download_and_process_data.sh
 ```
 
 This will download the sequences from the Sequence Read Archive (https://www.ncbi.nlm.nih.gov/sra) and European Nucleotide Archive (https://www.ebi.ac.uk/ena/browser/)

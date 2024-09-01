@@ -6,7 +6,7 @@ import tensorflow
 import random
 from keras.utils import to_categorical
 sys.path.append(os.path.abspath(".."))
-from utils.scoring_utils import score_from_cat
+from training.scoring_utils import score_from_cat
 from training.make_keras_model import make_batchnorm_model
 
 """

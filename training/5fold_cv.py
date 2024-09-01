@@ -8,8 +8,7 @@ import time
 import datetime
 import inspect
 from make_keras_model import make_batchnorm_model
-sys.path.append(os.path.abspath(".."))
-from utils.scoring_utils import score_from_cat
+from scoring_utils import score_from_cat
 
 
 
